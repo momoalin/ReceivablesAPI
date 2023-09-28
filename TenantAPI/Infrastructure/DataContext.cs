@@ -1,7 +1,7 @@
 ﻿global using Microsoft.EntityFrameworkCore;
 using TenantAPI.Models;
 
-namespace TenantAPI
+namespace TenantAPI.Infrastructure
 {
     public class DataContext : DbContext
     {

@@ -7,6 +7,5 @@ namespace TenantAPI.Repositories
     {
         Task<Customer> GetCustomerById(int Id);
         Task<List<Customer>> GetCustomers();
-        Task UpdateCustomer(int id, Customer entity);
     }
 }

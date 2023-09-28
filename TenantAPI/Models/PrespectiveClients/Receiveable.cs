@@ -10,12 +10,13 @@ namespace TenantAPI.Models
         public string Reference { get; set; }
         public string CurrencyCode { get; set; }
         public DateTime IssueDate { get; set; }
+        public DateTime? ClosedDate { get; set; }
         public DateTime DueDate { get; set; }
         [Column(TypeName = "decimal(18,4)")]
         public decimal OpeningValue { get; set; }
         [Column(TypeName = "decimal(18,4)")] 
         public decimal PaidValue { get; set; }
         public bool Cancelled { get; set; }
-        public Debtor ReceivableDebtor { get; set; }
+        public virtual Debtor ReceivableDebtor { get; set; }
     }
 }

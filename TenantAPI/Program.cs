@@ -1,4 +1,5 @@
-using TenantAPI;
+using TenantAPI.Infrastructure;
+using TenantAPI.Models;
 using TenantAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,8 +23,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-if (args.Length == 1 && args[0].ToLower() == "seeddata")
-    SeedData(app);
+//if (args.Length == 1 && args[0].ToLower() == "seeddata")
+SeedData(app);
 
 //Seed Data
 void SeedData(IHost app)
@@ -37,10 +38,48 @@ void SeedData(IHost app)
 
 app.MapGet("/", async (ICustomersRepository repo) =>
 {
-    return (await repo.GetCustomers()).ToArray();
-    
+    return Results.Ok((await repo.GetCustomers()).ToArray());
+
+}
+).WithName("GetCustomersReceivables")
+.WithOpenApi();
+
+
+app.MapGet("/openInvoices", async (ICustomersRepository repo) =>
+{
+    var customers = (await repo.GetCustomers()).ToList();
+    var openAmount = customers.Where(w => w.Recieveables is not null && w.Recieveables.Any())
+    .Select(a => new { customer_id = a.Id, receivables = a.Recieveables.Where(r => r.ClosedDate is null).Sum(b => b.PaidValue) });
+    return Results.Ok(openAmount);
 }
 );
+
+
+app.MapGet("/closedInvoices", async (ICustomersRepository repo) =>
+{
+    var customers = (await repo.GetCustomers()).ToList();
+    var openAmount = customers.Where(w => w.Recieveables is not null && w.Recieveables.Any())
+    .Select(a => new { customer_id = a.Id, receivables = a.Recieveables.Where(r => r.ClosedDate is not null).Sum(b => b.PaidValue) });
+    return Results.Ok(openAmount);
+}
+);
+
+app.MapPost("/receivables/{id}", async (int id, List <TenantAPI.DTOs.ReceivablesDTO> receivables, ICustomersRepository repo) =>
+{
+    var entities = receivables.Select(r => r.ToReceiveable());
+    var customer = await repo.GetCustomerById(id);
+    if (customer is null)
+        return Results.NotFound();
+    customer.Recieveables?.AddRange(entities);
+    await repo.Update(customer);
+    return Results.Created($"/receivables/{id}", customer);
+}
+).WithOpenApi(generatedOperation =>
+{
+    var parameter = generatedOperation.Parameters[0];
+    parameter.Description = "The ID associated with the customer"; 
+    return generatedOperation;
+}); ;
 
 app.Run();
 

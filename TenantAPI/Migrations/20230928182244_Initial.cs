@@ -90,6 +90,7 @@ namespace TenantAPI.Migrations
                     Reference = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CurrencyCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IssueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ClosedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OpeningValue = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     PaidValue = table.Column<decimal>(type: "decimal(18,4)", nullable: false),

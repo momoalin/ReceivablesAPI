@@ -6,6 +6,6 @@ namespace TenantAPI.Models
     public class Tenant : IEntity
     {
         public int Id { get; set; }
-        public List<Customer>? Customers { get; set; }
+        public virtual List<Customer>? Customers { get; set; }
     }
 }

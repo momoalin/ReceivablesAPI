@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using TenantAPI;
 using TenantAPI.DTOs;
+using TenantAPI.Infrastructure;
 using TenantAPI.Models;
 using TenantAPI.Models.PrespectiveClients;
 
@@ -59,15 +59,16 @@ public class DataSeeder
             receiveables.Add(new ReceivablesDTO()
             {
                 Reference = rnd.Next(5000000).ToString(),
-                IssueDate = DateTime.Parse("28/09/2020"),
-                DueDate = DateTime.Now.AddMonths(rnd.Next(5)),
+                IssueDate = "28/09/2020",
+                ClosedDate = i > no/2 ? "28/09/2020" : null,
+                DueDate = DateTime.Now.AddMonths(rnd.Next(5)).ToShortDateString(),
                 PaidValue = paid,
                 OpeningValue = 0,
                 DebtorName = "B&Q",
                 DebtorReference = "B&Q Reference",
-                DeptorCountryCode = "5000",
+                DebtorCountryCode = "5000",
                 CurrencyCode = "GBP",
-                DeptorRegistrationNumber = "1",
+                DebtorRegistrationNumber = "1",
             }.ToReceiveable());
 
         }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TenantAPI;
+using TenantAPI.Infrastructure;
 
 #nullable disable
 
@@ -111,6 +111,9 @@ namespace TenantAPI.Migrations
 
                     b.Property<bool>("Cancelled")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ClosedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CurrencyCode")
                         .IsRequired()

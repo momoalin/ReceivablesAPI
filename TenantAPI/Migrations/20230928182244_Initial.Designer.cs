@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TenantAPI;
+using TenantAPI.Infrastructure;
 
 #nullable disable
 
 namespace TenantAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230928171204_Initial")]
+    [Migration("20230928182244_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -114,6 +114,9 @@ namespace TenantAPI.Migrations
 
                     b.Property<bool>("Cancelled")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ClosedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CurrencyCode")
                         .IsRequired()
