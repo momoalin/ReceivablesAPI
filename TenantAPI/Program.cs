@@ -13,7 +13,7 @@ builder.Services.AddTransient<IReceivablesService, Handler>();
 builder.Services.AddTransient<DataSeeder>();
 //Add Repository Pattern
 builder.Services.AddScoped<ICustomersRepository, CustomersRepository>();
-builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
+builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString, b => b.MigrationsAssembly("Infrastructure")));
 
 
 builder.Services.AddDbContext<DataContext>();
