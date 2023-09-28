@@ -1,6 +1,7 @@
-﻿using TenantAPI.Infrastructure;
+﻿
+using Domain.Interfaces;
 
-namespace TenantAPI.Models
+namespace Domain.Entities
 {
     public class Address : IEntity
     {

@@ -1,12 +1,15 @@
-using TenantAPI.Infrastructure;
-using TenantAPI.Models;
-using TenantAPI.Repositories;
+using Application;
+using Application.Interfaces;
+using Domain.DTOs;
+using Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("AppDb");
+builder.Services.AddTransient<IReceivablesService, Handler>();
 builder.Services.AddTransient<DataSeeder>();
 //Add Repository Pattern
 builder.Services.AddScoped<ICustomersRepository, CustomersRepository>();
@@ -40,53 +43,27 @@ app.MapGet("/", async (ICustomersRepository repo) =>
 {
     return Results.Ok((await repo.GetCustomers()).ToArray());
 
-}
-).WithName("GetCustomersReceivables")
-.WithOpenApi();
+}).WithName("GetAllCustomers").WithOpenApi();
 
+app.MapGet("/openInvoices", async (ICustomersRepository repo, IReceivablesService handler) => Results.Ok(await handler.GetOpenInvoices(repo)));
 
-app.MapGet("/openInvoices", async (ICustomersRepository repo) =>
+app.MapGet("/closedInvoices", async (ICustomersRepository repo, IReceivablesService handler) => Results.Ok(await handler.GetClosedInvoices(repo)));
+
+app.MapPost("/receivables/{id}", async (int id, List<ReceivablesDTO> receivables, ICustomersRepository repo, IReceivablesService handler) =>
 {
-    var customers = (await repo.GetCustomers()).ToList();
-    var openAmount = customers.Where(w => w.Recieveables is not null && w.Recieveables.Any())
-    .Select(a => new { customer_id = a.Id, receivables = a.Recieveables.Where(r => r.ClosedDate is null).Sum(b => b.PaidValue) });
-    return Results.Ok(openAmount);
-}
-);
-
-
-app.MapGet("/closedInvoices", async (ICustomersRepository repo) =>
-{
-    var customers = (await repo.GetCustomers()).ToList();
-    var openAmount = customers.Where(w => w.Recieveables is not null && w.Recieveables.Any())
-    .Select(a => new { customer_id = a.Id, receivables = a.Recieveables.Where(r => r.ClosedDate is not null).Sum(b => b.PaidValue) });
-    return Results.Ok(openAmount);
-}
-);
-
-app.MapPost("/receivables/{id}", async (int id, List <TenantAPI.DTOs.ReceivablesDTO> receivables, ICustomersRepository repo) =>
-{
-    var entities = receivables.Select(r => r.ToReceiveable());
-    var customer = await repo.GetCustomerById(id);
-    if (customer is null)
+    var result = await handler.HandlePost(id, receivables, repo);
+    if (result == null)
         return Results.NotFound();
-    customer.Recieveables?.AddRange(entities);
-    await repo.Update(customer);
-    return Results.Created($"/receivables/{id}", customer);
+
+    return Results.Created($"/receivables/{id}", result);
 }
-).WithOpenApi(generatedOperation =>
+)
+    .WithOpenApi(generatedOperation =>
 {
     var parameter = generatedOperation.Parameters[0];
-    parameter.Description = "The ID associated with the customer"; 
+    parameter.Description = "The ID associated with the customer";
+    generatedOperation.Summary = "This endpoint takes as an input receivables associated with a prospective customer";
     return generatedOperation;
-}); ;
+});
 
 app.Run();
-
-
-/*
- Validate fields, OpenAPI, CRUD, Business Logic/analytics, Tests, Done
-    Debtor address validation (same address, dont overwrite. Different address?overwrite)
-    Nullables validation
- 
- */

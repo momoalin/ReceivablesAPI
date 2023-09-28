@@ -1,7 +1,6 @@
-﻿using TenantAPI.Infrastructure;
-using TenantAPI.Models.PrespectiveClients;
+﻿using Domain.Entities;
 
-namespace TenantAPI.Repositories
+namespace Application.Interfaces
 {
     public interface ICustomersRepository : IDataRepository<Customer>
     {
