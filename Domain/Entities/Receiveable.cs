@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Domain.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
-using TenantAPI.Infrastructure;
 
-namespace TenantAPI.Models
+
+namespace Domain.Entities
 {
     public class Receiveable : IEntity
     {
@@ -14,7 +14,7 @@ namespace TenantAPI.Models
         public DateTime DueDate { get; set; }
         [Column(TypeName = "decimal(18,4)")]
         public decimal OpeningValue { get; set; }
-        [Column(TypeName = "decimal(18,4)")] 
+        [Column(TypeName = "decimal(18,4)")]
         public decimal PaidValue { get; set; }
         public bool Cancelled { get; set; }
         public virtual Debtor ReceivableDebtor { get; set; }

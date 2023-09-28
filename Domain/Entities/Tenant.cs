@@ -1,7 +1,6 @@
-﻿using TenantAPI.Infrastructure;
-using TenantAPI.Models.PrespectiveClients;
+﻿using Domain.Interfaces;
 
-namespace TenantAPI.Models
+namespace Domain.Entities
 {
     public class Tenant : IEntity
     {

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using TenantAPI.DTOs;
-using TenantAPI.Infrastructure;
-using TenantAPI.Models;
-using TenantAPI.Models.PrespectiveClients;
+﻿using Domain.DTOs;
+using Domain.Entities;
+using Infrastructure;
+using System.Collections.Generic;
+
 
 public class DataSeeder
 {

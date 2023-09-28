@@ -1,7 +1,8 @@
-﻿using System.Net;
-using TenantAPI.Infrastructure;
+﻿using Domain.Interfaces;
+using System.Net;
 
-namespace TenantAPI.Models
+
+namespace Domain.Entities
 {
     public class Debtor : IEntity
     {

@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.IdentityModel.Tokens;
-using TenantAPI.Models;
+﻿using Domain.Entities;
 
-namespace TenantAPI.DTOs
+namespace Domain.DTOs
 {
     public class ReceivablesDTO
     {
@@ -40,7 +38,7 @@ namespace TenantAPI.DTOs
                 CurrencyCode = this.CurrencyCode,
                 DueDate = DateTime.Parse(this.DueDate),
                 IssueDate = DateTime.Parse(this.IssueDate),
-                ClosedDate = !this.ClosedDate.IsNullOrEmpty() ? DateTime.Parse(this.ClosedDate) : null,
+                ClosedDate = this.ClosedDate != null ? DateTime.Parse(this.ClosedDate) : null,
                 OpeningValue = this.OpeningValue,
                 PaidValue = this.PaidValue
             };

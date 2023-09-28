@@ -1,4 +1,4 @@
-﻿namespace TenantAPI.Infrastructure
+﻿namespace Domain.Interfaces
 {
     public interface IEntity
     {

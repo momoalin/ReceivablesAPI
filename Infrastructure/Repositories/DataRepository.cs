@@ -1,4 +1,6 @@
-﻿namespace TenantAPI.Infrastructure
+﻿using Domain.Interfaces;
+
+namespace Infrastructure.Repositories
 {
     public class DataRepository<TEntity> : IDataRepository<TEntity> where TEntity : class, IEntity
     {
