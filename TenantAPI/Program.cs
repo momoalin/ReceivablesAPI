@@ -1,8 +1,11 @@
 using Application;
 using Application.Interfaces;
 using Domain.DTOs;
+using Domain.Entities;
 using Infrastructure;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -39,23 +42,23 @@ void SeedData(IHost app)
     service.Seed();
 }
 
-app.MapGet("/", async (ICustomersRepository repo) =>
+app.MapGet("/", async Task<Results<Ok<Customer[]>, BadRequest>>(ICustomersRepository repo) =>
 {
-    return Results.Ok((await repo.GetCustomers()).ToArray());
+    return TypedResults.Ok((await repo.GetCustomers()).ToArray());
 
 }).WithName("GetAllCustomers").WithOpenApi();
 
-app.MapGet("/openInvoices", async (ICustomersRepository repo, IReceivablesService handler) => Results.Ok(await handler.GetOpenInvoices(repo)));
+app.MapGet("/openInvoices", async Task<Results<Ok<IEnumerable<CustomerStatsDTO>>, BadRequest>>(ICustomersRepository repo, IReceivablesService handler) => TypedResults.Ok(await handler.GetOpenInvoices(repo)));
 
-app.MapGet("/closedInvoices", async (ICustomersRepository repo, IReceivablesService handler) => Results.Ok(await handler.GetClosedInvoices(repo)));
+app.MapGet("/closedInvoices", async Task<Results<Ok<IEnumerable<CustomerStatsDTO>>, BadRequest>> (ICustomersRepository repo, IReceivablesService handler) => TypedResults.Ok(await handler.GetClosedInvoices(repo)));
 
-app.MapPost("/receivables/{id}", async (int id, List<ReceivablesDTO> receivables, ICustomersRepository repo, IReceivablesService handler) =>
+app.MapPost("/receivables/{id}", async Task<Results<Created<Customer>, NotFound>> (int id, List<ReceivablesDTO> receivables, ICustomersRepository repo, IReceivablesService handler) =>
 {
     var result = await handler.HandlePost(id, receivables, repo);
     if (result == null)
-        return Results.NotFound();
+        return TypedResults.NotFound();
 
-    return Results.Created($"/receivables/{id}", result);
+    return TypedResults.Created($"/receivables/{id}", result);
 }
 )
     .WithOpenApi(generatedOperation =>
@@ -67,3 +70,4 @@ app.MapPost("/receivables/{id}", async (int id, List<ReceivablesDTO> receivables
 });
 
 app.Run();
+public partial class Program { }

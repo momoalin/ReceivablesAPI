@@ -16,19 +16,19 @@ public class Handler : IReceivablesService
         return customer;
     }
 
-    public async Task<object> GetClosedInvoices(ICustomersRepository repo)
+    public async Task<IEnumerable<CustomerStatsDTO>> GetClosedInvoices(ICustomersRepository repo)
     {
         var customers = (await repo.GetCustomers()).ToList();
         var openAmount = customers.Where(w => w.Recieveables is not null && w.Recieveables.Any())
-        .Select(a => new { customer_id = a.Id, receivables = a.Recieveables.Where(r => r.ClosedDate is not null).Sum(b => b.PaidValue) });
+        .Select(a => new CustomerStatsDTO (){ CustomerId = a.Id, Receivables = a.Recieveables.Where(r => r.ClosedDate is not null).Sum(b => b.PaidValue) });
         return openAmount;
     }
 
-    public async Task<object> GetOpenInvoices(ICustomersRepository repo)
+    public async Task<IEnumerable<CustomerStatsDTO>> GetOpenInvoices(ICustomersRepository repo)
     {
         var customers = (await repo.GetCustomers()).ToList();
-        var openAmount = customers.Where(w => w.Recieveables is not null && w.Recieveables.Any())
-        .Select(a => new { customer_id = a.Id, receivables = a.Recieveables.Where(r => r.ClosedDate is null).Sum(b => b.PaidValue) });
+        IEnumerable<CustomerStatsDTO> openAmount = customers.Where(w => w.Recieveables is not null && w.Recieveables.Any())
+        .Select(a => new CustomerStatsDTO { CustomerId = a.Id, Receivables = a.Recieveables.Where(r => r.ClosedDate is null).Sum(b => b.PaidValue) });
         return openAmount;
     }
 }
@@ -37,9 +37,9 @@ public interface IReceivablesService
     public Task<Domain.Entities.Customer?> HandlePost(int id, List<ReceivablesDTO> receivables, ICustomersRepository repo);
 
 
-    public Task<object> GetClosedInvoices(ICustomersRepository repo);
+    public Task<IEnumerable<CustomerStatsDTO>> GetClosedInvoices(ICustomersRepository repo);
     
 
-    public Task<object> GetOpenInvoices(ICustomersRepository repo);
+    public Task<IEnumerable<CustomerStatsDTO>> GetOpenInvoices(ICustomersRepository repo);
     
 }
