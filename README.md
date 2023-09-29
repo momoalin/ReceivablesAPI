@@ -1,4 +1,9 @@
 # ReceivablesAPI
+
+To run migration:
+dotnet ef migrations add Initial --startup-project TenantAPI --project Infrastructure
+dotnet ef database update --startup-project TenantAPI --project Infrastructure
+
 Spent a couple of afternoons on an api that recieves and presents back information about customers that belong to a tenant & their receivables. 
 ![image](https://github.com/momoalin/ReceivablesAPI/assets/95264135/871baf1e-0fce-4298-a71b-05a43cea3ca1)
 
