@@ -8,9 +8,9 @@ public class DataSeeder
 {
     private readonly DataContext tenantDbContext;
 
-    public DataSeeder(DataContext employeeDbContext)
+    public DataSeeder(DataContext dbContext)
     {
-        this.tenantDbContext = employeeDbContext;
+        this.tenantDbContext = dbContext;
     }
 
     public void Seed()
