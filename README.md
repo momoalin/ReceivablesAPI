@@ -2,7 +2,6 @@
 
 To run migration
 ```
-dotnet ef migrations add Initial --startup-project TenantAPI --project Infrastructure
 dotnet ef database update --startup-project TenantAPI --project Infrastructure
 ```
 
